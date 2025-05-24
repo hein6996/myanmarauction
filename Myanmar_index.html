@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Auction</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 20px 0;
+            font-size: 2rem;
+            color: darkred;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        /* Setup Section */
+        #setupSection {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #setupButton label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        #setupButton input {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        #startAuctionSetup {
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #startAuctionSetup:hover {
+            background-color: #0056b3;
+        }
+
+        /* Auction Section */
+        #auctionSection {
+            display: none;
+            text-align: center;
+        }
+
+        .auction-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .auction-image {
+            width: 100%;
+            max-width: 200px;
+            height: 250px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .auction-details {
+            text-align: left;
+            font-size: xx-large;
+        }
+
+        .auction-details p {
+            margin: 10px 0;
+        }
+
+        #timer {
+            font-size: 1.5rem;
+            color: blue;
+            margin-bottom: 20px;
+        }
+
+        /* Action Section */
+        #auctionActions {
+            display: grid;
+            gap: 15px;
+            margin-top: 80px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #bidSection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #bidSection input {
+            padding: 10px;
+            font-size: x-small;
+            width: 100px;
+        }
+
+        #bidSection button {
+            padding: 10px;
+            font-size: x-small;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #bidSection button:hover {
+            background-color: #218838;
+        }
+
+        #quickBidButton button {
+            padding: 10px 20px;
+            font-size: x-small;
+            cursor: pointer;
+            background-color: #ffc107;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #quickBidButton button:hover {
+            background-color: #e0a800;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auction-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .auction-details {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+  <!-- Setup Section -->
+  <div id="setupSection" class="container">
+    <h1>Simple Auction</h1>
+    <div id="setupButton">
+      <label for="auctionTitle">Auction Title:</label>
+      <input type="text" id="auctionTitle" placeholder="Enter auction title" />
+      <label for="auctionTime">Duration (Minutes):</label>
+      <input type="text" id="auctionTime" placeholder="Enter duration" />
+      <label for="auctionImageUpload">Upload Item Image:</label>
+      <input type="file" id="auctionImageUpload" accept="image/*" />
+    </div>
+    <button id="startAuctionSetup">Start Auction</button>
+  </div>
+
+  <!-- Auction Section -->
+  <div id="auctionSection" class="container">
+    <h1 id="auctionTitleDisplay"></h1>
+    <div id="timer" class="hidden">Time Remaining: <span id="timeRemaining">00:00</span></div>
+
+    <div class="auction-container">
+      <img id="auctionImage" class="auction-image hidden" alt="Auction Item Image" />
+      <div class="auction-details">
+        <p id="totalPrice">စုစုပေါင်း: ¥0</p>
+        <p id="totalAmount">လေလံစျေး: ¥0</p>
+        <p id="additionalDonation">ထပ်တိုးအလှူငွေ: ¥0</p>
+      </div>
+    </div>
+
+    <div id="auctionActions">
+      <div id="bidSection">
+        <input type="text" id="bidAmount" placeholder="လေလံဈေး" />
+        <button id="addBid">ပမာဏ ပေါင်းပါ</button>
+        <input type="text" id="donationInput" placeholder="လှူဒါန်းမှုပမာဏထည့်ပါ" />
+        <button id="addDonation">လှူဒါန်းမှုပမာဏပေါင်းပါ</button>
+      </div>
+      <div id="quickBidButton">
+        <button class="quickBidButton" data-amount="10000">+၁၀၀၀၀</button>
+        <button class="quickBidButton" data-amount="50000">+၅၀၀၀၀</button>
+        <button class="quickBidButton" data-amount="100000">+၁၀၀၀၀၀</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ミャンマー数字 → アラビア数字
+    function convertMyanmarDigitsToArabic(input) {
+      const myanmarDigits = '၀၁၂၃၄၅၆၇၈၉';
+      return input.replace(/[၀-၉]/g, d => myanmarDigits.indexOf(d));
+    }
+
+    // アラビア数字 → ミャンマー数字
+    function convertArabicToMyanmarDigits(number) {
+      const myanmarDigits = ['၀', '၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉'];
+      return number.toString().split('').map(char => {
+        return /\d/.test(char) ? myanmarDigits[char] : char;
+      }).join('');
+    }
+
+    const setupSection = document.getElementById("setupSection");
+    const auctionSection = document.getElementById("auctionSection");
+    const auctionTitleDisplay = document.getElementById("auctionTitleDisplay");
+    const timerElement = document.getElementById("timeRemaining");
+    const auctionImage = document.getElementById("auctionImage");
+    const totalPriceElement = document.getElementById("totalPrice");
+    const totalAmountElement = document.getElementById("totalAmount");
+    const additionalDonationElement = document.getElementById("additionalDonation");
+    const bidInput = document.getElementById("bidAmount");
+    const addBidButton = document.getElementById("addBid");
+    const donationInput = document.getElementById("donationInput");
+    const addDonationButton = document.getElementById("addDonation");
+    const quickBidButtons = document.querySelectorAll(".quickBidButton");
+    const auctionTitleInput = document.getElementById("auctionTitle");
+    const auctionTimeInput = document.getElementById("auctionTime");
+    const auctionImageUpload = document.getElementById("auctionImageUpload");
+    const startAuctionSetup = document.getElementById("startAuctionSetup");
+    const timerContainer = document.getElementById("timer");
+
+    let totalAmount = 0;
+    let additionalDonation = 0;
+    let timeLeft = 300;
+    let countdown;
+
+    // オークション開始
+    startAuctionSetup.addEventListener("click", () => {
+      const title = auctionTitleInput.value.trim();
+      const timeStr = convertMyanmarDigitsToArabic(auctionTimeInput.value);
+      const time = parseInt(timeStr, 10);
+
+      if (!title) {
+        alert("Please enter a title!");
+        return;
+      }
+
+      if (!isNaN(time) && time > 0) {
+        timerContainer.classList.remove("hidden");
+        timeLeft = time * 60;
+        timerElement.textContent = formatTime(timeLeft);
+        startTimer();
+      } else {
+        timerContainer.classList.add("hidden");
+        alert("Duration is not set or invalid. Timer will not be displayed.");
+      }
+
+      const imageFile = auctionImageUpload.files[0];
+      if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          auctionImage.src = e.target.result;
+          auctionImage.classList.remove("hidden");
+        };
+        reader.readAsDataURL(imageFile);
+      }
+
+      auctionTitleDisplay.textContent = title;
+      setupSection.style.display = "none";
+      auctionSection.style.display = "block";
+    });
+
+    // タイマー処理
+    function startTimer() {
+      countdown = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          timerElement.textContent = "Auction Ended!";
+          return;
+        }
+        timeLeft--;
+        timerElement.textContent = formatTime(timeLeft);
+      }, 1000);
+    }
+
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      const formatted = `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+      return convertArabicToMyanmarDigits(formatted);
+    }
+
+    //၁၂၃၄to1234勝利
+    function toMyanmarNumber(n) {
+        return n.toString().replace(/\d/g, d => '၀၁၂၃၄၅၆၇၈၉'[d]);
+    }
+
+    function fromMyanmarNumber(str) {
+        return str.replace(/[၀-၉]/g, d => '၀၁၂၃၄၅၆၇၈၉'.indexOf(d));
+    }
+
+
+    // 入札処理
+    addBidButton.addEventListener("click", () => {
+        const bid = parseInt(fromMyanmarNumber(bidInput.value), 10);
+        if (isNaN(bid)) {
+            alert("Please enter a valid amount!");
+            return;
+        }
+
+        totalAmount = bid;
+        updateTotal();
+        bidInput.value = "";
+    });
+
+    // 寄付処理
+    addDonationButton.addEventListener("click", () => {
+        const donation = parseInt(fromMyanmarNumber(donationInput.value), 10);
+        if (isNaN(donation)) {
+            alert("Please enter a valid donation amount!");
+            return;
+        }
+
+        additionalDonation = donation;
+        updateTotal();
+        donationInput.value = "";
+    });
+
+    // クイックビッド
+    quickBidButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        const amount = parseInt(button.dataset.amount, 10);
+        const current = convertMyanmarDigitsToArabic(bidInput.value || "0");
+        bidInput.value = convertArabicToMyanmarDigits((parseInt(current, 10) + amount).toString());
+      });
+    });
+
+    // 合計金額の更新
+    function updateTotal() {
+        totalPriceElement.textContent = `စုစုပေါင်း: ¥${toMyanmarNumber(totalAmount + additionalDonation)}`;
+        totalAmountElement.textContent = `လေလံစျေး: ¥${toMyanmarNumber(totalAmount)}`;
+        additionalDonationElement.textContent = `ထပ်တိုးအလှူငွေ: ¥${toMyanmarNumber(additionalDonation)}`;
+    }
+  </script>
+</body>
+</html>
